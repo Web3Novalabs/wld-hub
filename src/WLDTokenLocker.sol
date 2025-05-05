@@ -32,10 +32,7 @@ contract WLDTokenLocker {
         require(lockDuration <= maxLockDuration, "Lock duration too long");
         require(wldToken.transferFrom(msg.sender, address(this), amount), "Transfer failed");
 
-        locks[msg.sender] = Lock({
-            amount: amount,
-            unlockTime: block.timestamp + lockDuration
-        });
+        locks[msg.sender] = Lock({amount: amount, unlockTime: block.timestamp + lockDuration});
 
         emit TokensLocked(msg.sender, amount, block.timestamp + lockDuration);
     }
