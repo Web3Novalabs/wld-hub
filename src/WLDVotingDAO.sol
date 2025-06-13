@@ -78,8 +78,8 @@ contract WLDVotingDAO {
     function finalizeProposal(uint256 _proposalId) public {
         Proposal storage proposal = proposals[_proposalId];
         require(proposal.id != 0, "Proposal does not exist");
-        require(proposal.open, "Proposal is still open");
         require(!proposal.finalized, "Proposal already finalized");
+        require(proposal.open, "Proposal is still open");
 
         proposal.open = false;
         proposal.finalized = true;

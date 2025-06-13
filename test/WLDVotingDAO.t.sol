@@ -21,14 +21,14 @@ contract WLDVotingDAOTest is Test {
         voter3 = makeAddr("voter3");
 
         vm.startPrank(deployer);
-        wldToken = new ERC20Token("Worldcoin", "WLD", 18);
+        wldToken = new ERC20Token("Worldcoin", "WLD", 18, 10000 * 10 ** 18);
         dao = new WLDVotingDAO(address(wldToken));
-        vm.stopPrank();
 
-        // Mint some WLD tokens for voters
-        wldToken.mint(voter1, 1000 * 10 ** 18);
-        wldToken.mint(voter2, 500 * 10 ** 18);
-        wldToken.mint(voter3, 2000 * 10 ** 18);
+        // Transfer WLD tokens to voters
+        wldToken.transfer(voter1, 1000 * 10 ** 18);
+        wldToken.transfer(voter2, 500 * 10 ** 18);
+        wldToken.transfer(voter3, 2000 * 10 ** 18);
+        vm.stopPrank();
     }
 
     function testCreateProposal() public {
@@ -37,7 +37,16 @@ contract WLDVotingDAOTest is Test {
         uint256 proposalId = dao.createProposal("Test Proposal", snapshotBlock);
 
         assertEq(proposalId, 1);
-        (uint256 id, string memory description, uint256 sBlock, uint256 voteYes, uint256 voteNo, bool open, bool finalized, bool passed) = dao.proposals(proposalId);
+        (
+            uint256 id,
+            string memory description,
+            uint256 sBlock,
+            uint256 voteYes,
+            uint256 voteNo,
+            bool open,
+            bool finalized,
+            bool passed
+        ) = dao.proposals(proposalId);
         assertEq(id, 1);
         assertEq(description, "Test Proposal");
         assertEq(sBlock, snapshotBlock);
@@ -58,7 +67,16 @@ contract WLDVotingDAOTest is Test {
         vm.prank(voter1);
         dao.vote(proposalId, true);
 
-        (uint256 id, string memory description, uint256 sBlock, uint256 voteYes, uint256 voteNo, bool open, bool finalized, bool passed) = dao.proposals(proposalId);
+        (
+            uint256 id,
+            string memory description,
+            uint256 sBlock,
+            uint256 voteYes,
+            uint256 voteNo,
+            bool open,
+            bool finalized,
+            bool passed
+        ) = dao.proposals(proposalId);
         assertEq(voteYes, 1000 * 10 ** 18); // Voter1's balance
         assertEq(voteNo, 0);
 
@@ -111,7 +129,7 @@ contract WLDVotingDAOTest is Test {
         dao.finalizeProposal(proposalId);
     }
 
-    function testGetVotingPower() public {
+    function testGetVotingPower() public view {
         uint256 power1 = dao.getVotingPower(voter1, block.number);
         assertEq(power1, 1000 * 10 ** 18);
 
