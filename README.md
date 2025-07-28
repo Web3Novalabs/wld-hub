@@ -106,6 +106,11 @@ To run tests, run the following command
 ```bash
   forge test --match-path test/TimeLockedVault.t.sol
 ```
+To run test - WLDHubItems.t.sol below command is used
+
+```bash
+  forge test --match-path test/WLDHubItems.t.sol 
+```
 
 Ensure your .env is set up with RPC URL and private key if needed.
 ## 📁 Files:
